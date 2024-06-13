@@ -66,6 +66,10 @@ function RootStack() {
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(home)" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+      <Stack.Screen
+        name="notification"
+        options={{ presentation: "modal", headerTitle: "Notifications" }}
+      />
       <Stack.Screen name="profile" />
     </Stack>
   );

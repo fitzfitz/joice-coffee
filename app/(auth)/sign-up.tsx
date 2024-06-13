@@ -12,12 +12,12 @@ import {
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FormField from "@/components/ui/form-field";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { UserRegistrationTypes } from "@/lib/types/auth";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createUser } from "@/lib/appwrite";
+import { createUser, getCurrentUser } from "@/lib/appwrite";
 import toast from "@/lib/toast";
 
 const imgBg = require("@/assets/images/bg/bg-login.jpg");
@@ -50,6 +50,7 @@ export const SignUpSchema: ZodType<UserRegistrationTypes> = z
   });
 
 const SignUp = () => {
+  const { replace } = useRouter();
   const [load, setLoad] = useState<boolean>(false);
   const {
     control,
@@ -71,16 +72,22 @@ const SignUp = () => {
 
   const onSubmit = async (data: UserRegistrationTypes) => {
     setLoad(true);
-    await createUser(data).finally(() => setLoad(false));
+    const userCreation = await createUser(data);
+    if (userCreation) {
+      await getCurrentUser().then(() => {
+        replace("/");
+      });
+    }
+    setLoad(false);
   };
 
   return (
     <ImageBackground
       source={imgBg}
-      className="w-screen h-full flex-1 justify-center items-center"
+      className="h-full w-screen flex-1 items-center justify-center"
       resizeMode="cover"
     >
-      <SafeAreaView className="flex-1 w-full">
+      <SafeAreaView className="w-full flex-1">
         <ScrollView
           contentContainerStyle={{
             justifyContent: "center",
@@ -93,8 +100,8 @@ const SignUp = () => {
             className="w-full items-center"
           >
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-              <View className="w-[90%] my-4 p-8 rounded-3xl bg-black/70">
-                <Text className="text-3xl text-white mb-4">Register User</Text>
+              <View className="my-4 w-[90%] rounded-3xl bg-black/70 p-8">
+                <Text className="mb-4 text-3xl text-white">Register User</Text>
                 <Controller
                   name="email"
                   control={control}
@@ -213,7 +220,7 @@ const SignUp = () => {
                   }}
                 />
                 <TouchableOpacity
-                  className="bg-secondary-brown p-3 rounded-full flex-row space-x-2 justify-center"
+                  className="flex-row justify-center space-x-2 rounded-full bg-secondary-brown p-3"
                   onPress={handleSubmit(onSubmit)}
                   disabled={load}
                 >
@@ -221,7 +228,7 @@ const SignUp = () => {
                     <ActivityIndicator animating size="small" color="#FFF" />
                   ) : null}
 
-                  <Text className="text-white text-center">Register</Text>
+                  <Text className="text-center text-white">Register</Text>
                 </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>

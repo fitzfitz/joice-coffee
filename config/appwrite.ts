@@ -1,6 +1,5 @@
 export default {
-  // endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || "",
-  endpoint: "http://192.168.91.81:1111/v1",
+  endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || "",
   platform: process.env.EXPO_PUBLIC_APPWRITE_PLATFORM || "",
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || "",
   databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID || "",
